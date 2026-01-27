@@ -665,6 +665,10 @@ export class OpenCodeAdapter extends EventEmitter<OpenCodeAdapterEvents> {
       env.DEEPSEEK_API_KEY = apiKeys.deepseek;
       console.log('[OpenCode CLI] Using DeepSeek API key from settings');
     }
+    if (apiKeys.moonshot) {
+      env.MOONSHOT_API_KEY = apiKeys.moonshot;
+      console.log('[OpenCode CLI] Using Moonshot API key from settings');
+    }
     if (apiKeys.zai) {
       env.ZAI_API_KEY = apiKeys.zai;
       console.log('[OpenCode CLI] Using Z.AI API key from settings');
