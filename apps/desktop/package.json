@@ -20,6 +20,9 @@
     "release:win": "ACCOMPLISH_BUNDLED_MCP=1 pnpm build && node scripts/package.cjs --win --x64 --publish always",
     "package:linux": "ACCOMPLISH_BUNDLED_MCP=1 pnpm build && node scripts/package.cjs --linux --publish never",
     "release:linux": "ACCOMPLISH_BUNDLED_MCP=1 pnpm build && node scripts/package.cjs --linux --publish always",
+    "package:linux:deb": "ACCOMPLISH_BUNDLED_MCP=1 pnpm build && node scripts/package.cjs --linux deb --publish never",
+    "package:linux:rpm": "ACCOMPLISH_BUNDLED_MCP=1 pnpm build && node scripts/package.cjs --linux rpm --publish never",
+    "package:all": "node scripts/build-all.cjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit",
@@ -210,28 +213,59 @@
     },
     "linux": {
       "target": [
-        "AppImage"
+        {
+          "target": "deb",
+          "arch": ["x64"]
+        },
+        {
+          "target": "rpm",
+          "arch": ["x64"]
+        },
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "target": "tar.gz",
+          "arch": ["x64"]
+        }
       ],
       "icon": "resources/icon.png",
       "category": "Utility;Productivity;Development;",
+      "synopsis": "Asistente de escritorio potenciado por IA",
       "desktop": {
         "Name": "WaIA",
         "Comment": "Asistente de escritorio potenciado por IA",
         "Keywords": "AI;Assistant;Productivity;WaIA;",
-        "StartupWMClass": "WaIA"
+        "StartupWMClass": "WaIA",
+        "Terminal": "false",
+        "Type": "Application"
       }
     },
+    "deb": {
+      "packageCategory": "utils",
+      "priority": "optional",
+      "depends": []
+    },
+    "rpm": {
+      "packageCategory": "Applications/System",
+      "depends": []
+    },
     "nsis": {
-      "oneClick": true,
-      "perMachine": false,
-      "allowToChangeInstallationDirectory": false,
-      "createDesktopShortcut": true,
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "resources/icon.ico",
+      "uninstallerIcon": "resources/icon.ico",
+      "installerHeader": "resources/icon.ico",
+      "installerSidebar": "resources/icon.ico",
+      "uninstallerSidebar": "resources/icon.ico",
+      "createDesktopShortcut": "always",
       "createStartMenuShortcut": true,
       "shortcutName": "WaIA",
       "runAfterFinish": true,
-      "installerIcon": "resources/icon.ico",
-      "uninstallerIcon": "resources/icon.ico",
-      "deleteAppDataOnUninstall": false
+      "deleteAppDataOnUninstall": false,
+      "packElevateHelper": true
     }
   }
 }
