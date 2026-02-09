@@ -3,6 +3,8 @@
  *
  * Internationalization setup with Spanish (es) as default language
  * and English (en) as fallback.
+ *
+ * Optimized to avoid esbuild EPIPE errors in development
  */
 
 import i18n from 'i18next';
@@ -42,12 +44,12 @@ i18n
       escapeValue: false,
     },
 
-    // Enable debug mode in development
-    debug: import.meta.env.MODE === 'development',
+    // Disable debug mode to avoid esbuild EPIPE errors
+    debug: false,
 
-    // React settings
+    // React settings - disable useSuspense for React 19 compatibility
     react: {
-      useSuspense: true,
+      useSuspense: false,
     },
   });
 
