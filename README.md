@@ -222,6 +222,136 @@ pnpm package:linux
 # El AppImage se generará en: release/WaIA-0.3.8-linux-x86_64.AppImage
 ```
 
+### 💻 Modo Desarrollo
+
+Para desarrollo y pruebas, puedes ejecutar WaIA en modo desarrollo:
+
+```bash
+# Clonar el repositorio
+git clone https://github.com/jivagrisma/clone-Openwork.git
+cd accomplish
+
+# Instalar dependencias
+pnpm install
+
+# Ejecutar en modo desarrollo
+pnpm dev
+```
+
+**Importante:** El modo desarrollo es la forma más confiable de usar WaIA en Linux sin dependencias adicionales.
+
+---
+
+## 🚀 Primeros Pasos con WaIA
+
+### 1. Ejecutar WaIA por primera vez
+
+**Opción A - Modo Desarrollo (Recomendado):**
+```bash
+cd ~/Escritorio/accomplish
+pnpm dev
+```
+
+**Opción B - AppImage:**
+```bash
+# Instalar FUSE (primera vez)
+sudo apt install fuse libfuse2
+
+# Ejecutar AppImage
+./WaIA-0.3.8-linux-x86_64.AppImage
+```
+
+### 2. Configurar tu proveedor de IA
+
+Al iniciar WaIA por primera vez, verás la pantalla de configuración:
+
+1. **Selecciona tu proveedor:**
+   - **Z.AI (GLM):** Modelo GLM-4 (requiere API key de Z.AI)
+   - **OpenAI:** GPT-4, GPT-3.5
+   - **Anthropic:** Claude 3.5 Sonnet, Claude 3 Opus
+   - **Google AI:** Gemini Pro, Gemini Flash
+   - **xAI:** Grok
+   - **Otros:** DeepSeek, Moonshot, MiniMax
+
+2. **Ingresa tu API Key:**
+   - Copia tu clave API desde el proveedor
+   - Pégala en el campo correspondiente
+   - Haz clic en "Guardar"
+
+3. **Verifica la conexión:**
+   - WaIA verificará que tu API key funciona
+   - ¡Listo! Ya puedes comenzar a usar WaIA
+
+### 3. Primeras acciones con WaIA
+
+Prueba estos prompts iniciales (ya configurados en español):
+
+- **"Organiza mis archivos por fecha"**
+- **"Resume el documento que descargué ayer"**
+- **"Crea un reporte de ventas del mes pasado"**
+
+---
+
+## ⚙️ Configuración de API Keys
+
+### Z.AI (GLM-4) 🔑
+
+1. Visita: https://open.bigmodel.cn/
+2. Regístrate y obtén tu API Key
+3. En WaIA: Settings → Providers → Z.AI
+4. Ingresa tu API Key y selecciona el modelo GLM-4
+
+### Google AI (Gemini Flash 2.5 Lite) 🔑
+
+1. Visita: https://aistudio.google.com/app/apikey
+2. Crea un nuevo proyecto o usa uno existente
+3. Copia tu API Key
+4. En WaIA: Settings → Providers → Google AI
+5. Ingresa tu API Key y selecciona Gemini Flash 2.5 Lite
+
+### Otros Proveedores
+
+- **OpenAI:** https://platform.openai.com/api-keys
+- **Anthropic:** https://console.anthropic.com/
+- **xAI:** https://console.x.ai/
+
+---
+
+## 🐛 Solución de Problemas
+
+### El AppImage no se ejecuta
+
+**Problema:** `dlopen(): error loading libfuse.so.2`
+
+**Solución:**
+```bash
+sudo apt install fuse libfuse2
+./WaIA-*.AppImage
+```
+
+### Error en modo desarrollo
+
+**Problema:** `[plugin:vite:esbuild] The service is no longer running: write EPIPE`
+
+**Solución:**
+```bash
+# Limpiar caché y reinstalar
+cd ~/Escritorio/accomplish
+rm -rf node_modules/.vite apps/desktop/node_modules/.vite
+pnpm install
+pnpm dev
+```
+
+### La aplicación se ve en inglés
+
+**Problema:** El idioma no cambió a español
+
+**Solución:** Verifica que el archivo `apps/desktop/src/i18n/index.ts` tenga `lng: 'es'` y `debug: false`.
+
+---
+
+## 📚 Recursos Adicionales
+
 <br />
 
 ---
