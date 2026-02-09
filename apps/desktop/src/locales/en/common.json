@@ -58,7 +58,7 @@
     "version": "Version"
   },
   "home": {
-    "title": "What will you accomplish today?",
+    "title": "What will you accomplish with WaIA today?",
     "placeholder": "Describe a task and let AI handle the rest",
     "examplePrompts": "Example prompts",
     "examples": {

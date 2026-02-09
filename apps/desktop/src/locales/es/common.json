@@ -58,7 +58,7 @@
     "version": "Versión"
   },
   "home": {
-    "title": "¿Qué lograrás hoy?",
+    "title": "¿Qué lograrás hoy con WaIA?",
     "placeholder": "Describe una tarea y deja que la IA se encargue del resto",
     "examplePrompts": "Ejemplos de prompts",
     "examples": {

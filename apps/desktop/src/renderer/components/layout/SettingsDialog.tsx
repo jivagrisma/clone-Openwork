@@ -268,7 +268,7 @@ export default function SettingsDialog({
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <DialogHeader>
-            <DialogTitle>Set up Accomplish</DialogTitle>
+            <DialogTitle>Configurar WaIA</DialogTitle>
           </DialogHeader>
           <div className="flex items-center justify-center py-12">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
@@ -286,7 +286,7 @@ export default function SettingsDialog({
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle>Set up Accomplish</DialogTitle>
+          <DialogTitle>Configurar WaIA</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6 mt-4">
