@@ -16,7 +16,11 @@
 
 # WaIA (formerly Accomplish) - Open Source AI Desktop Agent
 
+> **📌 Note:** This is a personalized fork of Accomplish rebranded as "WaIA" with Spanish language support by [jivagrisma](https://github.com/jivagrisma/clone-Openwork). The original project is available at [accomplish-ai/accomplish](https://github.com/accomplish-ai/accomplish).
+
 WaIA is an open source AI desktop agent that automates file management, document creation, and browser tasks locally on your machine. Bring your own API keys (OpenAI, Anthropic, Google, Z.AI/GLM, xAI) or run local models via Ollama.
+
+**🌍 Default Language:** This version comes with Spanish (Latin America) as the default language, with English available as a fallback.
 
 <p align="center">
   <strong>Runs locally on your machine. Bring your own API keys or local models. MIT licensed.</strong>
