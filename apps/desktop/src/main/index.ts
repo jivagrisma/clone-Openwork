@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import { app, BrowserWindow, shell, ipcMain, nativeImage, dialog } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, nativeImage, dialog, Menu } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -12,6 +12,7 @@ if (process.platform === 'win32') {
 }
 
 import { registerIPCHandlers } from './ipc/handlers';
+import { buildMenu } from './menu';
 import {
   FutureSchemaError,
 } from '@accomplish_ai/agent-core';
@@ -192,8 +193,8 @@ if (!gotTheLock) {
         await dialog.showMessageBox({
           type: 'error',
           title: 'Update Required',
-          message: `This data was created by a newer version of Accomplish (schema v${err.storedVersion}).`,
-          detail: `Your app supports up to schema v${err.appVersion}. Please update Accomplish to continue.`,
+          message: `This data was created by a newer version of WaIA (schema v${err.storedVersion}).`,
+          detail: `Your app supports up to schema v${err.appVersion}. Please update WaIA to continue.`,
           buttons: ['Quit'],
         });
         app.quit();
@@ -235,6 +236,11 @@ if (!gotTheLock) {
 
     registerIPCHandlers();
     console.log('[Main] IPC handlers registered');
+
+    // Build and set application menu with Spanish labels
+    const menu = buildMenu();
+    Menu.setApplicationMenu(menu);
+    console.log('[Main] Application menu set');
 
     createWindow();
 
