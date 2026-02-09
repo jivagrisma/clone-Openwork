@@ -8,7 +8,7 @@ const APP_DATA_NAME = 'Accomplish';
 app.setPath('userData', path.join(app.getPath('appData'), APP_DATA_NAME));
 
 if (process.platform === 'win32') {
-  app.setAppUserModelId('ai.accomplish.desktop');
+  app.setAppUserModelId('ai.waia.desktop');
 }
 
 import { registerIPCHandlers } from './ipc/handlers';
@@ -48,7 +48,7 @@ if (process.env.CLEAN_START === '1') {
   }
 }
 
-app.setName('Accomplish');
+app.setName('WaIA');
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -89,7 +89,7 @@ function createWindow() {
     height: 800,
     minWidth: 900,
     minHeight: 600,
-    title: 'Accomplish',
+    title: 'WaIA',
     icon: icon.isEmpty() ? undefined : icon,
     titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
     trafficLightPosition: { x: 16, y: 16 },

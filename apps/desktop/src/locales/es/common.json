@@ -1,0 +1,82 @@
+{
+  "app": {
+    "name": "WaIA",
+    "description": "Asistente de escritorio potenciado por IA"
+  },
+  "menu": {
+    "file": "Archivo",
+    "edit": "Editar",
+    "view": "Ver",
+    "help": "Ayuda"
+  },
+  "sidebar": {
+    "newTask": "Nueva Tarea",
+    "settings": "Configuración",
+    "searchTasks": "Buscar Tareas",
+    "noConversations": "No hay conversaciones aún"
+  },
+  "task": {
+    "title": "Tarea",
+    "description": "Descripción",
+    "status": "Estado",
+    "running": "Ejecutándose",
+    "queued": "En cola",
+    "completed": "Completada",
+    "error": "Error",
+    "cancelled": "Cancelada"
+  },
+  "buttons": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "close": "Cerrar",
+    "ok": "Aceptar",
+    "yes": "Sí",
+    "no": "No",
+    "retry": "Reintentar",
+    "copy": "Copiar",
+    "paste": "Pegar"
+  },
+  "messages": {
+    "welcome": "Bienvenido a WaIA",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "warning": "Advertencia",
+    "info": "Información"
+  },
+  "settings": {
+    "title": "Configuración",
+    "aiProvider": "Proveedor de IA",
+    "apiKey": "Clave de API",
+    "model": "Modelo",
+    "language": "Idioma",
+    "theme": "Tema",
+    "debugMode": "Modo de depuración",
+    "about": "Acerca de",
+    "version": "Versión"
+  },
+  "home": {
+    "placeholder": "¿Qué te gustaría hacer hoy?",
+    "examples": "Ejemplos",
+    "example1": "Analizar datos de ventas",
+    "example2": "Crear un reporte",
+    "example3": "Enviar correo electrónico"
+  },
+  "execution": {
+    "thinking": "Pensando...",
+    "executing": "Ejecutando...",
+    "completed": "Completado",
+    "failed": "Falló",
+    "output": "Salida",
+    "logs": "Registros"
+  },
+  "errors": {
+    "generic": "Algo salió mal. Por favor intenta de nuevo.",
+    "network": "Error de conexión. Verifica tu internet.",
+    "apiError": "Error de API. Verifica tus credenciales.",
+    "fileNotFound": "Archivo no encontrado.",
+    "permissionDenied": "Permiso denegado."
+  }
+}

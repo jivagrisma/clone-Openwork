@@ -1,0 +1,82 @@
+{
+  "app": {
+    "name": "WaIA",
+    "description": "AI-powered desktop assistant"
+  },
+  "menu": {
+    "file": "File",
+    "edit": "Edit",
+    "view": "View",
+    "help": "Help"
+  },
+  "sidebar": {
+    "newTask": "New Task",
+    "settings": "Settings",
+    "searchTasks": "Search Tasks",
+    "noConversations": "No conversations yet"
+  },
+  "task": {
+    "title": "Task",
+    "description": "Description",
+    "status": "Status",
+    "running": "Running",
+    "queued": "Queued",
+    "completed": "Completed",
+    "error": "Error",
+    "cancelled": "Cancelled"
+  },
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "ok": "OK",
+    "yes": "Yes",
+    "no": "No",
+    "retry": "Retry",
+    "copy": "Copy",
+    "paste": "Paste"
+  },
+  "messages": {
+    "welcome": "Welcome to WaIA",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information"
+  },
+  "settings": {
+    "title": "Settings",
+    "aiProvider": "AI Provider",
+    "apiKey": "API Key",
+    "model": "Model",
+    "language": "Language",
+    "theme": "Theme",
+    "debugMode": "Debug Mode",
+    "about": "About",
+    "version": "Version"
+  },
+  "home": {
+    "placeholder": "What would you like to do today?",
+    "examples": "Examples",
+    "example1": "Analyze sales data",
+    "example2": "Create a report",
+    "example3": "Send email"
+  },
+  "execution": {
+    "thinking": "Thinking...",
+    "executing": "Executing...",
+    "completed": "Completed",
+    "failed": "Failed",
+    "output": "Output",
+    "logs": "Logs"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "Network error. Check your internet connection.",
+    "apiError": "API error. Check your credentials.",
+    "fileNotFound": "File not found.",
+    "permissionDenied": "Permission denied."
+  }
+}
