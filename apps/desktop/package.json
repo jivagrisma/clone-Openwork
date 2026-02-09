@@ -212,44 +212,15 @@
       "icon": "resources/icon.ico"
     },
     "linux": {
-      "target": [
-        {
-          "target": "deb",
-          "arch": ["x64"]
-        },
-        {
-          "target": "rpm",
-          "arch": ["x64"]
-        },
-        {
-          "target": "AppImage",
-          "arch": ["x64"]
-        },
-        {
-          "target": "tar.gz",
-          "arch": ["x64"]
-        }
-      ],
+      "target": ["AppImage"],
       "icon": "resources/icon.png",
       "category": "Utility;Productivity;Development;",
-      "synopsis": "Asistente de escritorio potenciado por IA",
       "desktop": {
         "Name": "WaIA",
         "Comment": "Asistente de escritorio potenciado por IA",
         "Keywords": "AI;Assistant;Productivity;WaIA;",
-        "StartupWMClass": "WaIA",
-        "Terminal": "false",
-        "Type": "Application"
+        "StartupWMClass": "WaIA"
       }
-    },
-    "deb": {
-      "packageCategory": "utils",
-      "priority": "optional",
-      "depends": []
-    },
-    "rpm": {
-      "packageCategory": "Applications/System",
-      "depends": []
     },
     "nsis": {
       "oneClick": false,
