@@ -180,10 +180,14 @@ export class OpenCodeAdapter extends EventEmitter<OpenCodeAdapterEvents> {
         );
         this.currentSessionTempDir = this.tempFilesManager.getSessionPath(taskId);
         console.log(`[OpenCode Adapter] Created ${this.tempFileInfos.length} temp files for task ${taskId}`);
+        console.log('[OpenCode Adapter] Temp file paths:', this.tempFileInfos.map(f => f.tempFilePath));
+        console.log('[OpenCode Adapter] Session temp dir:', this.currentSessionTempDir);
       } catch (error) {
-        console.warn('[OpenCode Adapter] Failed to create temp files, continuing without them:', error);
+        console.error('[OpenCode Adapter] Failed to create temp files, continuing without them:', error);
         // Continue without temp files - the system will fall back to text-only context
       }
+    } else {
+      console.log('[OpenCode Adapter] No attachments to process for task', taskId);
     }
 
     if (this.logWatcher) {

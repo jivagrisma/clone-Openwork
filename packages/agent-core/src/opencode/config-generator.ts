@@ -661,6 +661,13 @@ export function buildCliArgs(options: BuildCliArgsOptions): string[] {
   const attachmentsContext = generateAttachmentsContext(attachments || [], tempFiles);
   const enhancedPrompt = attachmentsContext ? `${prompt}${attachmentsContext}` : prompt;
 
+  // Debug log to verify attachments context is included
+  if (attachments && attachments.length > 0) {
+    console.log('[buildCliArgs] Attachments:', attachments.length, 'Temp files:', tempFiles?.length || 0);
+    console.log('[buildCliArgs] Attachments context length:', attachmentsContext.length);
+    console.log('[buildCliArgs] Enhanced prompt preview (first 500 chars):', enhancedPrompt.substring(0, 500));
+  }
+
   // CRITICAL: JSON format required for StreamParser to parse messages
   args.push('--format', 'json');
 

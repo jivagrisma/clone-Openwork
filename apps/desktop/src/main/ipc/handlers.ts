@@ -138,6 +138,17 @@ export function registerIPCHandlers(): void {
     const sender = event.sender;
     const validatedConfig = validateTaskConfig(config);
 
+    // Debug logging for attachments
+    console.log('[IPC task:start] Received config with attachments:', validatedConfig.attachments?.length || 0);
+    if (validatedConfig.attachments && validatedConfig.attachments.length > 0) {
+      console.log('[IPC task:start] Attachment details:', validatedConfig.attachments.map(a => ({
+        fileName: a.fileName,
+        type: a.type,
+        size: a.size,
+        hasData: !!a.data,
+      })));
+    }
+
     if (!isMockTaskEventsEnabled() && !storage.hasReadyProvider()) {
       throw new Error('No provider is ready. Please connect a provider and select a model in Settings.');
     }
