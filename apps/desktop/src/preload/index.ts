@@ -6,7 +6,7 @@
  */
 
 import { contextBridge, ipcRenderer } from 'electron';
-import type { ProviderType, Skill, TodoItem } from '@accomplish_ai/agent-core';
+import type { ProviderType, Skill, TodoItem, TaskConfig, Task } from '@accomplish_ai/agent-core';
 
 // Expose the accomplish API to the renderer
 const accomplishAPI = {
@@ -19,13 +19,13 @@ const accomplishAPI = {
     ipcRenderer.invoke('shell:open-external', url),
 
   // Task operations
-  startTask: (config: { description: string }): Promise<unknown> =>
+  startTask: (config: TaskConfig): Promise<Task> =>
     ipcRenderer.invoke('task:start', config),
   cancelTask: (taskId: string): Promise<void> =>
     ipcRenderer.invoke('task:cancel', taskId),
   interruptTask: (taskId: string): Promise<void> =>
     ipcRenderer.invoke('task:interrupt', taskId),
-  getTask: (taskId: string): Promise<unknown> =>
+  getTask: (taskId: string): Promise<Task> =>
     ipcRenderer.invoke('task:get', taskId),
   listTasks: (): Promise<unknown[]> => ipcRenderer.invoke('task:list'),
   deleteTask: (taskId: string): Promise<void> =>
