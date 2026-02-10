@@ -12,7 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ChevronDown } from 'lucide-react';
 import { hasAnyReadyProvider } from '@accomplish_ai/agent-core/common';
 import { useTranslation } from '@/hooks/useTranslation';
-import type { TaskAttachment } from '@accomplish_ai/agent-core';
+import type { TaskAttachment, TaskUpdateEvent, PermissionRequest } from '@accomplish_ai/agent-core';
 
 // Import use case images for proper bundling in production
 import calendarPrepNotesImg from '/assets/usecases/calendar-prep-notes.png';
@@ -71,11 +71,11 @@ export default function HomePage() {
 
   // Subscribe to task events
   useEffect(() => {
-    const unsubscribeTask = accomplish.onTaskUpdate((event) => {
+    const unsubscribeTask = accomplish.onTaskUpdate((event: TaskUpdateEvent) => {
       addTaskUpdate(event);
     });
 
-    const unsubscribePermission = accomplish.onPermissionRequest((request) => {
+    const unsubscribePermission = accomplish.onPermissionRequest((request: PermissionRequest) => {
       setPermissionRequest(request);
     });
 

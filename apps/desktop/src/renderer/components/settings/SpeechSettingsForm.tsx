@@ -35,7 +35,7 @@ export function SpeechSettingsForm({ onSave, onChange }: SpeechSettingsFormProps
 
   // Load existing configuration on mount
   useEffect(() => {
-    accomplish.speechGetConfig().then((config) => {
+    accomplish.speechGetConfig().then((config: { hasApiKey: boolean }) => {
       setIsConfigured(config.hasApiKey);
     });
   }, [accomplish]);

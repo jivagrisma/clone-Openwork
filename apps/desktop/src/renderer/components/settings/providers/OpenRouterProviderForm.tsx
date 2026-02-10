@@ -71,7 +71,7 @@ export function OpenRouterProviderForm({
         return;
       }
 
-      const models = result.models?.map(m => ({
+      const models = result.models?.map((m: { id: string; name: string }) => ({
         id: `openrouter/${m.id}`,
         name: m.name,
       })) || [];

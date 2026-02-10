@@ -130,7 +130,7 @@ export function useSpeechInput(options: UseSpeechInputOptions = {}): UseSpeechIn
 
   // Check if speech input is configured
   useEffect(() => {
-    accomplish.speechIsConfigured().then((configured) => {
+    accomplish.speechIsConfigured().then((configured: boolean) => {
       setState((prev) => ({ ...prev, isConfigured: configured }));
     });
   }, [accomplish]);

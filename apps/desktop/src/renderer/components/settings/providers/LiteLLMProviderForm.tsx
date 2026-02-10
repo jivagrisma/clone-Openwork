@@ -63,7 +63,7 @@ export function LiteLLMProviderForm({
       }
 
       // Map models to the expected format
-      const models = result.models?.map(m => ({
+      const models = result.models?.map((m: { id: string; name: string }) => ({
         id: m.id,
         name: m.name,
       })) || [];

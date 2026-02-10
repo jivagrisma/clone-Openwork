@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { useTaskStore } from '@/stores/taskStore';
 import { useNavigate } from 'react-router-dom';
 import { getAccomplish } from '@/lib/accomplish';
+import type { ProviderSettings } from '@accomplish_ai/agent-core';
 
 interface CreateSkillModalProps {
   open: boolean;
@@ -33,7 +34,7 @@ export function CreateSkillModal({ open, onOpenChange, onSettingsClose }: Create
   useEffect(() => {
     if (open) {
       const accomplish = getAccomplish();
-      accomplish.getProviderSettings().then((settings) => {
+      accomplish.getProviderSettings().then((settings: ProviderSettings) => {
         setHasProvider(!!settings?.activeProviderId);
       }).catch(() => {
         setHasProvider(false);

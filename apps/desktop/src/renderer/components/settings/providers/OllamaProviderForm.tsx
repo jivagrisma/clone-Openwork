@@ -163,7 +163,7 @@ export function OllamaProviderForm({
         return;
       }
 
-      const models: OllamaModel[] = (result.models || []).map(m => ({
+      const models: OllamaModel[] = (result.models || []).map((m: { id: string; displayName: string; toolSupport?: string }) => ({
         id: `ollama/${m.id}`,
         name: m.displayName,
         toolSupport: m.toolSupport || 'unknown',

@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTaskStore } from '../stores/taskStore';
 import { getAccomplish } from '../lib/accomplish';
 import { springs } from '../lib/animations';
-import type { TaskMessage } from '@accomplish_ai/agent-core/common';
+import type { TaskMessage, TaskUpdateEvent, PermissionRequest, TodoItem } from '@accomplish_ai/agent-core/common';
 import { hasAnyReadyProvider } from '@accomplish_ai/agent-core/common';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -328,7 +328,7 @@ export default function ExecutionPage() {
     accomplish.getDebugMode().then(setDebugModeEnabled);
 
     // Subscribe to debug mode changes from settings
-    const unsubscribeDebugMode = accomplish.onDebugModeChange?.(({ enabled }) => {
+    const unsubscribeDebugMode = accomplish.onDebugModeChange?.(({ enabled }: { enabled: boolean }) => {
       setDebugModeEnabled(enabled);
     });
 
@@ -372,13 +372,13 @@ export default function ExecutionPage() {
       setCurrentToolInput(null);
 
       // Fetch todos for this task from database (always set, even if empty, to clear stale todos)
-      accomplish.getTodosForTask(id).then((todos) => {
+      accomplish.getTodosForTask(id).then((todos: TodoItem[]) => {
         useTaskStore.getState().setTodos(id, todos);
       });
     }
 
     // Handle individual task updates
-    const unsubscribeTask = accomplish.onTaskUpdate((event) => {
+    const unsubscribeTask = accomplish.onTaskUpdate((event: TaskUpdateEvent) => {
       addTaskUpdate(event);
       // Track current tool from tool messages (only for current task to prevent UI leaking)
       if (event.taskId === id && event.type === 'message' && event.message?.type === 'tool') {
@@ -403,7 +403,7 @@ export default function ExecutionPage() {
 
     // Handle batched task updates (for performance)
     // Only update local UI state for current task to prevent UI leaking between parallel tasks
-    const unsubscribeTaskBatch = accomplish.onTaskUpdateBatch?.((event) => {
+    const unsubscribeTaskBatch = accomplish.onTaskUpdateBatch?.((event: any) => {
       if (event.messages?.length) {
         addTaskUpdateBatch(event);
         // Track current tool from the last message (only for current task)
@@ -426,19 +426,19 @@ export default function ExecutionPage() {
       }
     });
 
-    const unsubscribePermission = accomplish.onPermissionRequest((request) => {
+    const unsubscribePermission = accomplish.onPermissionRequest((request: PermissionRequest) => {
       setPermissionRequest(request);
     });
 
     // Subscribe to task status changes (e.g., queued -> running)
-    const unsubscribeStatusChange = accomplish.onTaskStatusChange?.((data) => {
-      if (data.taskId === id) {
-        updateTaskStatus(data.taskId, data.status);
+    const unsubscribeStatusChange = accomplish.onTaskStatusChange?.((data: unknown) => {
+      if ((data as any).taskId === id) {
+        updateTaskStatus((data as any).taskId, (data as any).status);
       }
     });
 
     // Subscribe to debug logs
-    const unsubscribeDebugLog = accomplish.onDebugLog((log) => {
+    const unsubscribeDebugLog = accomplish.onDebugLog((log: unknown) => {
       const entry = log as DebugLogEntry;
       if (entry.taskId === id) {
         setDebugLogs((prev) => [...prev, entry]);

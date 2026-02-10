@@ -94,7 +94,7 @@ export function BedrockProviderForm({
 
       // Auto-select default model if available in fetched list
       const defaultModelId = getDefaultModelForProvider('bedrock');
-      const hasDefaultModel = defaultModelId && fetchedModels.some(m => m.id === defaultModelId);
+      const hasDefaultModel = defaultModelId && fetchedModels.some((m: { id: string }) => m.id === defaultModelId);
 
       const provider: ConnectedProvider = {
         providerId: 'bedrock',

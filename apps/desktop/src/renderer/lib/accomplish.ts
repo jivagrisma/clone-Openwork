@@ -217,8 +217,10 @@ interface AccomplishShell {
 // Extend Window interface
 declare global {
   interface Window {
-    accomplish?: AccomplishAPI;
-    accomplishShell?: AccomplishShell;
+    accomplish: AccomplishAPI & {
+      validateBedrockCredentials: (credentials: BedrockCredentials) => Promise<{ valid: boolean; error?: string }>;
+    };
+    accomplishShell: AccomplishShell;
   }
 }
 

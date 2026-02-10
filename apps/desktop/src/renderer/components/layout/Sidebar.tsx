@@ -13,6 +13,7 @@ import SettingsDialog from './SettingsDialog';
 import { Settings, MessageSquarePlus, Search } from 'lucide-react';
 import logoImage from '/assets/logo-1.png';
 import { useTranslation } from '@/hooks/useTranslation';
+import type { TaskUpdateEvent } from '@accomplish_ai/agent-core';
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -28,11 +29,11 @@ export default function Sidebar() {
   // Subscribe to task status changes (queued -> running) and task updates (complete/error)
   // This ensures sidebar always reflects current task status
   useEffect(() => {
-    const unsubscribeStatusChange = accomplish.onTaskStatusChange?.((data) => {
+    const unsubscribeStatusChange = accomplish.onTaskStatusChange?.((data: any) => {
       updateTaskStatus(data.taskId, data.status);
     });
 
-    const unsubscribeTaskUpdate = accomplish.onTaskUpdate((event) => {
+    const unsubscribeTaskUpdate = accomplish.onTaskUpdate((event: TaskUpdateEvent) => {
       addTaskUpdate(event);
     });
 
