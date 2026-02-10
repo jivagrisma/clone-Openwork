@@ -12,6 +12,7 @@ if (process.platform === 'win32') {
 }
 
 import { registerIPCHandlers } from './ipc/handlers';
+import { registerFilesHandlers } from './ipc/handlers-files';
 import { buildMenu } from './menu';
 import {
   FutureSchemaError,
@@ -235,6 +236,7 @@ if (!gotTheLock) {
     }
 
     registerIPCHandlers();
+    registerFilesHandlers();
     console.log('[Main] IPC handlers registered');
 
     // Build and set application menu with Spanish labels

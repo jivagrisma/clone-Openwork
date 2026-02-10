@@ -301,6 +301,64 @@ const accomplishAPI = {
     error: { code: string; message: string };
   }> => ipcRenderer.invoke('speech:transcribe', audioData, mimeType),
 
+  // File attachments API
+  pickFiles: (): Promise<{
+    success: boolean;
+    attachments?: Array<{
+      type: string;
+      data: string;
+      fileName?: string;
+      mimeType?: string;
+      size?: number;
+      timestamp?: string;
+      label?: string;
+      textContent?: string;
+    }>;
+    error?: string;
+    warnings?: string[];
+    totalSize?: number;
+  }> => ipcRenderer.invoke('files:pick-files'),
+  validateFile: (filePath: string): Promise<{ valid: boolean; error?: string }> =>
+    ipcRenderer.invoke('files:validate-file', filePath),
+  getAttachmentConfig: (): Promise<{
+    maxFileSize: number;
+    maxTotalSize: number;
+    maxOCRFileSize: number;
+    enableOCR: boolean;
+    supportedTypes: Record<string, string[]>;
+  }> => ipcRenderer.invoke('files:get-config'),
+  processFile: (filePath: string): Promise<{
+    success: boolean;
+    attachments?: Array<{
+      type: string;
+      data: string;
+      fileName?: string;
+      mimeType?: string;
+      size?: number;
+      timestamp?: string;
+      label?: string;
+      textContent?: string;
+    }>;
+    error?: string;
+    totalSize?: number;
+  }> => ipcRenderer.invoke('files:process-file', filePath),
+  processMultipleFiles: (filePaths: string[]): Promise<{
+    success: boolean;
+    attachments?: Array<{
+      type: string;
+      data: string;
+      fileName?: string;
+      mimeType?: string;
+      size?: number;
+      timestamp?: string;
+      label?: string;
+      textContent?: string;
+    }>;
+    error?: string;
+    warnings?: string[];
+    totalSize?: number;
+  }> => ipcRenderer.invoke('files:process-multiple', filePaths),
+
   // Skills management
   getSkills: (): Promise<Skill[]> => ipcRenderer.invoke('skills:list'),
   getEnabledSkills: (): Promise<Skill[]> => ipcRenderer.invoke('skills:list-enabled'),

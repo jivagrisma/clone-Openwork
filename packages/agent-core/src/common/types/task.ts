@@ -33,10 +33,75 @@ export interface Task {
   result?: TaskResult;
 }
 
+/**
+ * File attachment types supported in tasks
+ */
+export type AttachmentType =
+  | 'screenshot'
+  | 'json'
+  | 'image'
+  | 'text'
+  | 'code'
+  | 'document'
+  | 'spreadsheet'
+  | 'presentation'
+  | 'audio'
+  | 'video'
+  | 'ebook'
+  | 'email';
+
+/**
+ * File attachment in a task message
+ * Supports multiple file formats with base64 encoding
+ */
 export interface TaskAttachment {
-  type: 'screenshot' | 'json';
+  /** Type of attachment content */
+  type: AttachmentType;
+  /** Base64 encoded file data or extracted text content */
   data: string;
+  /** Optional display label (legacy, use fileName) */
   label?: string;
+  /** Original file name */
+  fileName?: string;
+  /** MIME type of the file */
+  mimeType?: string;
+  /** File size in bytes */
+  size?: number;
+  /** ISO timestamp when attachment was created */
+  timestamp?: string;
+  /** For text-based files: the extracted text content */
+  textContent?: string;
+  /** Number of pages (for PDF, presentations) */
+  pageCount?: number;
+  /** Language detected (for text documents) */
+  language?: string;
+}
+
+/**
+ * Result from file attachment operations
+ */
+export interface FileAttachmentResult {
+  success: boolean;
+  attachments?: TaskAttachment[];
+  error?: string;
+  warnings?: string[];
+  totalSize?: number;
+}
+
+/**
+ * Configuration for file attachments
+ */
+export interface AttachmentConfig {
+  /** Maximum size per file in bytes (default: 10MB) */
+  maxFileSize: number;
+  /** Maximum total size per task in bytes (default: 50MB) */
+  maxTotalSize: number;
+  /** Supported file extensions by category */
+  supportedTypes: Record<string, string[]>;
+  /** Whether to use OCR for PDFs with images */
+  enableOCR: boolean;
+  /** Maximum file size for OCR in bytes (default: 5MB) */
+  maxOCRFileSize: number;
 }
 
 export interface TaskMessage {

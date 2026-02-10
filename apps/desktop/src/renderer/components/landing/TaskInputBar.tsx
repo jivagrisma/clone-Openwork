@@ -8,6 +8,8 @@ import { SpeechInputButton } from '../ui/SpeechInputButton';
 import { ModelIndicator } from '../ui/ModelIndicator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { PlusMenu } from './PlusMenu';
+import { AttachmentsList } from '@/components/attachments';
+import type { TaskAttachment } from '@accomplish_ai/agent-core';
 import { useTranslation } from '@/hooks/useTranslation';
 
 interface TaskInputBarProps {
@@ -40,6 +42,14 @@ interface TaskInputBarProps {
    * Automatically submit after a successful transcription.
    */
   autoSubmitOnTranscription?: boolean;
+  /**
+   * Current file attachments
+   */
+  attachments?: TaskAttachment[];
+  /**
+   * Called when attachments change
+   */
+  onAttachmentsChange?: (attachments: TaskAttachment[]) => void;
 }
 
 export default function TaskInputBar({
@@ -56,6 +66,8 @@ export default function TaskInputBar({
   onOpenModelSettings,
   hideModelWhenNoModel = false,
   autoSubmitOnTranscription = true,
+  attachments = [],
+  onAttachmentsChange,
 }: TaskInputBarProps) {
   const isDisabled = disabled || isLoading;
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -134,6 +146,21 @@ export default function TaskInputBar({
     }, 0);
   };
 
+  /**
+   * Handle removing an attachment
+   */
+  const handleRemoveAttachment = (index: number) => {
+    const newAttachments = attachments.filter((_, i) => i !== index);
+    onAttachmentsChange?.(newAttachments);
+  };
+
+  /**
+   * Handle attachments change from PlusMenu
+   */
+  const handleAttachmentsChange = (newAttachments: TaskAttachment[]) => {
+    onAttachmentsChange?.(newAttachments);
+  };
+
   return (
     <div className="w-full space-y-2">
       {/* Error message */}
@@ -156,6 +183,16 @@ export default function TaskInputBar({
             )}
           </AlertDescription>
         </Alert>
+      )}
+
+      {/* Attachments list (shown above input when there are attachments) */}
+      {attachments.length > 0 && (
+        <AttachmentsList
+          attachments={attachments}
+          onRemove={handleRemoveAttachment}
+          disabled={isDisabled}
+          className="px-1"
+        />
       )}
 
       {/* Input container - two rows: textarea top, toolbar bottom */}
@@ -182,6 +219,8 @@ export default function TaskInputBar({
             onSkillSelect={handleSkillSelect}
             onOpenSettings={(tab) => onOpenSettings?.(tab)}
             disabled={isDisabled || speechInput.isRecording}
+            attachments={attachments}
+            onAttachmentsChange={handleAttachmentsChange}
           />
 
           {/* Right side controls */}
@@ -222,7 +261,7 @@ export default function TaskInputBar({
               accomplish.logEvent({
                 level: 'info',
                 message: 'Task input submit clicked',
-                context: { prompt: value },
+                context: { prompt: value, attachmentCount: attachments.length },
               });
               onSubmit();
             }}

@@ -97,6 +97,9 @@ export type {
   StartupStage,
   TaskProgress,
   TaskUpdateEvent,
+  AttachmentType,
+  FileAttachmentResult,
+  AttachmentConfig,
 } from './task.js';
 
 export type { ThoughtEvent, CheckpointEvent } from './thought-stream.js';

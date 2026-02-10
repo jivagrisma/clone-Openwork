@@ -12,6 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ChevronDown } from 'lucide-react';
 import { hasAnyReadyProvider } from '@accomplish_ai/agent-core/common';
 import { useTranslation } from '@/hooks/useTranslation';
+import type { TaskAttachment } from '@accomplish_ai/agent-core';
 
 // Import use case images for proper bundling in production
 import calendarPrepNotesImg from '/assets/usecases/calendar-prep-notes.png';
@@ -53,6 +54,7 @@ export default function HomePage() {
   const [showExamples, setShowExamples] = useState(true);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [settingsInitialTab, setSettingsInitialTab] = useState<'providers' | 'voice' | 'skills'>('providers');
+  const [attachments, setAttachments] = useState<TaskAttachment[]>([]);
   const { startTask, isLoading, addTaskUpdate, setPermissionRequest } = useTaskStore();
   const navigate = useNavigate();
   const accomplish = getAccomplish();
@@ -187,6 +189,8 @@ export default function HomePage() {
                 }}
                 onOpenModelSettings={handleOpenModelSettings}
                 hideModelWhenNoModel={true}
+                attachments={attachments}
+                onAttachmentsChange={setAttachments}
               />
             </CardContent>
 
