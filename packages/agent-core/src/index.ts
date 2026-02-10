@@ -205,6 +205,17 @@ export { redact } from './utils/redact.js';
 
 export { mapResultToStatus } from './utils/task-status.js';
 
+// Temporary files manager for task attachments
+export {
+  TempFilesManager,
+  tempFilesManager,
+} from './common/utils/temp-files-manager.js';
+
+export type {
+  TempFileInfo,
+  TempSessionInfo,
+} from './common/utils/temp-files-manager.js';
+
 // Logging - use createLogWriter factory from ./factories/log-writer.js instead
 
 // -----------------------------------------------------------------------------

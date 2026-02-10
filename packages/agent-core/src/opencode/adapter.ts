@@ -6,6 +6,7 @@ import { spawn } from 'child_process';
 import { StreamParser } from './stream-parser.js';
 import { OpenCodeLogWatcher, createLogWatcher, OpenCodeLogError } from './log-watcher.js';
 import { CompletionEnforcer, CompletionEnforcerCallbacks } from './completion/index.js';
+import { TempFilesManager, type TempFileInfo } from '../common/utils/temp-files-manager.js';
 import type { TaskConfig, Task, TaskMessage, TaskResult } from '../common/types/task.js';
 import type { OpenCodeMessage } from '../common/types/opencode.js';
 import type { PermissionRequest } from '../common/types/permission.js';
@@ -26,7 +27,7 @@ export interface AdapterOptions {
   tempPath: string;
   getCliCommand: () => { command: string; args: string[] };
   buildEnvironment: (taskId: string) => Promise<NodeJS.ProcessEnv>;
-  buildCliArgs: (config: TaskConfig) => Promise<string[]>;
+  buildCliArgs: (config: TaskConfig, tempFiles?: TempFileInfo[]) => Promise<string[]>;
   onBeforeStart?: () => Promise<void>;
   getModelDisplayName?: (modelId: string) => string;
 }
@@ -61,6 +62,9 @@ export class OpenCodeAdapter extends EventEmitter<OpenCodeAdapterEvents> {
   private hasReceivedFirstTool: boolean = false;
   private startTaskCalled: boolean = false;
   private options: AdapterOptions;
+  private tempFilesManager: TempFilesManager;
+  private tempFileInfos: TempFileInfo[] = [];
+  private currentSessionTempDir: string | null = null;
 
   constructor(options: AdapterOptions, taskId?: string) {
     super();
@@ -70,6 +74,7 @@ export class OpenCodeAdapter extends EventEmitter<OpenCodeAdapterEvents> {
     this.completionEnforcer = this.createCompletionEnforcer();
     this.setupStreamParsing();
     this.setupLogWatcher();
+    this.tempFilesManager = TempFilesManager.getInstance();
   }
 
   private createCompletionEnforcer(): CompletionEnforcer {
@@ -161,6 +166,26 @@ export class OpenCodeAdapter extends EventEmitter<OpenCodeAdapterEvents> {
       this.waitingTransitionTimer = null;
     }
 
+    // Reset temp file info from previous task
+    this.tempFileInfos = [];
+    this.currentSessionTempDir = null;
+
+    // Create temporary files from attachments if present
+    if (config.attachments && config.attachments.length > 0) {
+      try {
+        await this.tempFilesManager.initialize();
+        this.tempFileInfos = await this.tempFilesManager.createTempFilesFromAttachments(
+          taskId,
+          config.attachments
+        );
+        this.currentSessionTempDir = this.tempFilesManager.getSessionPath(taskId);
+        console.log(`[OpenCode Adapter] Created ${this.tempFileInfos.length} temp files for task ${taskId}`);
+      } catch (error) {
+        console.warn('[OpenCode Adapter] Failed to create temp files, continuing without them:', error);
+        // Continue without temp files - the system will fall back to text-only context
+      }
+    }
+
     if (this.logWatcher) {
       await this.logWatcher.start();
     }
@@ -169,7 +194,7 @@ export class OpenCodeAdapter extends EventEmitter<OpenCodeAdapterEvents> {
       await this.options.onBeforeStart();
     }
 
-    const cliArgs = await this.options.buildCliArgs(config);
+    const cliArgs = await this.options.buildCliArgs(config, this.tempFileInfos);
 
     const { command, args: baseArgs } = this.options.getCliCommand();
     const startMsg = `Starting: ${command} ${[...baseArgs, ...cliArgs].join(' ')}`;
@@ -345,8 +370,20 @@ export class OpenCodeAdapter extends EventEmitter<OpenCodeAdapterEvents> {
       this.ptyProcess = null;
     }
 
+    // Cleanup temporary files
+    if (this.currentTaskId && this.tempFileInfos.length > 0) {
+      const taskId = this.currentTaskId;
+      // Don't await - cleanup in background
+      this.tempFilesManager.cleanupSession(taskId).catch((err) => {
+        console.warn(`[OpenCode Adapter] Failed to cleanup temp files for task ${taskId}:`, err);
+      });
+      console.log(`[OpenCode Adapter] Scheduled cleanup for ${this.tempFileInfos.length} temp files`);
+    }
+
     this.currentSessionId = null;
     this.currentTaskId = null;
+    this.currentSessionTempDir = null;
+    this.tempFileInfos = [];
     this.messages = [];
     this.hasCompleted = true;
     this.currentModelId = null;

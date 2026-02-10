@@ -3,6 +3,7 @@ import fs from 'fs';
 import type { ProviderId } from '../common/types/providerSettings.js';
 import type { Skill } from '../common/types/skills.js';
 import type { TaskAttachment } from '../common/types/task.js';
+import type { TempFileInfo } from '../common/utils/temp-files-manager.js';
 
 export const ACCOMPLISH_AGENT_NAME = 'accomplish';
 
@@ -581,12 +582,14 @@ export interface BuildCliArgsOptions {
   } | null;
   /** File attachments to include as context */
   attachments?: TaskAttachment[];
+  /** Temporary file information for attachments */
+  tempFiles?: TempFileInfo[];
 }
 
 /**
  * Generate a context string for file attachments to include in the prompt
  */
-function generateAttachmentsContext(attachments: TaskAttachment[]): string {
+function generateAttachmentsContext(attachments: TaskAttachment[], tempFiles?: TempFileInfo[]): string {
   if (!attachments || attachments.length === 0) {
     return '';
   }
@@ -596,24 +599,53 @@ function generateAttachmentsContext(attachments: TaskAttachment[]): string {
 
   for (let i = 0; i < attachments.length; i++) {
     const att = attachments[i];
+    const tempFile = tempFiles?.[i];
+
     context += `[Archivo ${i + 1}]: ${att.fileName || att.label || 'sin_nombre'}\n`;
     context += `  Tipo: ${att.type}\n`;
     if (att.mimeType) context += `  MIME: ${att.mimeType}\n`;
     if (att.size) context += `  Tamaño: ${att.size} bytes\n`;
 
+    // Include physical path if temp file is available
+    if (tempFile) {
+      context += `  Ruta temporal: ${tempFile.tempFilePath}\n`;
+    }
+
     // For text/code files, include the content
-    if (att.textContent && att.textContent.length < 10000) {
-      context += `  Contenido:\n${att.textContent}\n`;
+    if (att.textContent && att.textContent.length < 5000) {
+      context += `  Vista previa del contenido:\n${att.textContent.substring(0, 1000)}${att.textContent.length > 1000 ? '...' : ''}\n`;
     } else if (att.textContent) {
-      context += `  Contenido: (archivo de texto, ${att.textContent.length} caracteres)\n`;
+      context += `  Archivo de texto disponible (${att.textContent.length} caracteres).\n`;
+      context += `  Usa la herramienta 'read' para leer el contenido completo.\n`;
     }
 
     // For images, indicate availability
     if (att.type === 'image' || att.type === 'screenshot') {
-      context += `  (Imagen disponible en formato base64)\n`;
+      if (tempFile) {
+        context += `  Imagen disponible en: ${tempFile.tempFilePath}\n`;
+      } else {
+        context += `  (Imagen disponible en formato base64)\n`;
+      }
+    }
+
+    // For PDFs and documents
+    if (att.type === 'document') {
+      if (tempFile) {
+        context += `  Documento disponible en: ${tempFile.tempFilePath}\n`;
+        context += `  Usa herramientas apropiadas para extraer el contenido.\n`;
+      }
     }
 
     context += '\n';
+  }
+
+  // Add instructions for accessing files
+  if (tempFiles && tempFiles.length > 0) {
+    context += `IMPORTANTE: Los archivos están guardados temporalmente.\n`;
+    context += `Puedes acceder a estos archivos usando herramientas estándar como:\n`;
+    context += `- 'read' para leer el contenido de archivos de texto\n`;
+    context += `- 'glob' para buscar archivos\n`;
+    context += `- Herramientas del sistema operativo si es necesario\n\n`;
   }
 
   context += '--- Fin de Archivos Adjuntos ---\n';
@@ -621,12 +653,12 @@ function generateAttachmentsContext(attachments: TaskAttachment[]): string {
 }
 
 export function buildCliArgs(options: BuildCliArgsOptions): string[] {
-  const { prompt, sessionId, selectedModel, attachments } = options;
+  const { prompt, sessionId, selectedModel, attachments, tempFiles } = options;
 
   const args: string[] = ['run'];
 
   // Generate attachments context if attachments are provided
-  const attachmentsContext = generateAttachmentsContext(attachments || []);
+  const attachmentsContext = generateAttachmentsContext(attachments || [], tempFiles);
   const enhancedPrompt = attachmentsContext ? `${prompt}${attachmentsContext}` : prompt;
 
   // CRITICAL: JSON format required for StreamParser to parse messages

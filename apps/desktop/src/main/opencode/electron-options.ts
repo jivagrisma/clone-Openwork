@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import type { TaskAdapterOptions, TaskManagerOptions, TaskCallbacks } from '@accomplish_ai/agent-core';
 import type { TaskConfig } from '@accomplish_ai/agent-core';
+import type { TempFileInfo } from '@accomplish_ai/agent-core';
 import { DEV_BROWSER_PORT } from '@accomplish_ai/agent-core';
 import {
   getAzureEntraToken,
@@ -149,7 +150,7 @@ export async function buildEnvironment(taskId: string): Promise<NodeJS.ProcessEn
   return env;
 }
 
-export async function buildCliArgs(config: TaskConfig, _taskId: string): Promise<string[]> {
+export async function buildCliArgs(config: TaskConfig, _taskId: string, tempFiles?: TempFileInfo[]): Promise<string[]> {
   const storage = getStorage();
   const activeModel = storage.getActiveProviderModel();
   const selectedModel = activeModel || storage.getSelectedModel();
@@ -162,6 +163,7 @@ export async function buildCliArgs(config: TaskConfig, _taskId: string): Promise
       model: selectedModel.model,
     } : null,
     attachments: config.attachments,
+    tempFiles,
   });
 }
 

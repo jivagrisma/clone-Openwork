@@ -3,6 +3,7 @@ import type { TaskConfig, Task, TaskMessage, TaskResult, TaskStatus } from '../.
 import type { OpenCodeMessage } from '../../common/types/opencode.js';
 import type { PermissionRequest } from '../../common/types/permission.js';
 import type { TodoItem } from '../../common/types/todo.js';
+import type { TempFileInfo } from '../../common/utils/temp-files-manager.js';
 import { toTaskMessage, flushAndCleanupBatcher, queueMessage } from '../../opencode/message-processor.js';
 import { stopAzureFoundryProxy } from '../../opencode/proxies/azure-foundry-proxy.js';
 import { stopMoonshotProxy } from '../../opencode/proxies/moonshot-proxy.js';
@@ -29,7 +30,7 @@ export interface TaskCallbacks {
 
 export interface TaskManagerOptions {
   adapterOptions: Omit<AdapterOptions, 'buildCliArgs'> & {
-    buildCliArgs: (config: TaskConfig, taskId: string) => Promise<string[]>;
+    buildCliArgs: (config: TaskConfig, taskId: string, tempFiles?: TempFileInfo[]) => Promise<string[]>;
   };
   defaultWorkingDirectory: string;
   maxConcurrentTasks?: number;
@@ -129,7 +130,7 @@ export class TaskManager {
   ): Promise<Task> {
     const adapterOptions: AdapterOptions = {
       ...this.options.adapterOptions,
-      buildCliArgs: (taskConfig) => this.options.adapterOptions.buildCliArgs(taskConfig, taskId),
+      buildCliArgs: (taskConfig: TaskConfig, tempFiles?: TempFileInfo[]) => this.options.adapterOptions.buildCliArgs(taskConfig, taskId, tempFiles),
     };
 
     const adapter = new OpenCodeAdapter(adapterOptions, taskId);
