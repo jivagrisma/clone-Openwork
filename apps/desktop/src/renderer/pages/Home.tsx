@@ -89,11 +89,17 @@ export default function HomePage() {
     if (!prompt.trim() || isLoading) return;
 
     const taskId = `task_${Date.now()}`;
-    const task = await startTask({ prompt: prompt.trim(), taskId });
+    const task = await startTask({
+      prompt: prompt.trim(),
+      taskId,
+      attachments: attachments.length > 0 ? attachments : undefined,
+    });
     if (task) {
+      // Clear attachments after task starts
+      setAttachments([]);
       navigate(`/execution/${task.id}`);
     }
-  }, [prompt, isLoading, startTask, navigate]);
+  }, [prompt, isLoading, startTask, navigate, attachments]);
 
   const handleSubmit = async () => {
     if (!prompt.trim() || isLoading) return;

@@ -161,6 +161,7 @@ export async function buildCliArgs(config: TaskConfig, _taskId: string): Promise
       provider: selectedModel.provider,
       model: selectedModel.model,
     } : null,
+    attachments: config.attachments,
   });
 }
 

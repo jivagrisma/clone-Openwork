@@ -1,5 +1,19 @@
 import { z } from 'zod';
 
+// Schema for file attachments
+const taskAttachmentSchema = z.object({
+  type: z.enum(['screenshot', 'json', 'image', 'text', 'code', 'document', 'spreadsheet', 'presentation', 'audio', 'video', 'ebook', 'email']),
+  data: z.string(),
+  label: z.string().optional(),
+  fileName: z.string().optional(),
+  mimeType: z.string().optional(),
+  size: z.number().optional(),
+  timestamp: z.string().optional(),
+  textContent: z.string().optional(),
+  pageCount: z.number().optional(),
+  language: z.string().optional(),
+});
+
 export const taskConfigSchema = z.object({
   prompt: z.string().min(1, 'Prompt is required'),
   taskId: z.string().optional(),
@@ -9,6 +23,7 @@ export const taskConfigSchema = z.object({
   outputSchema: z.record(z.any()).optional(),
   sessionId: z.string().optional(),
   chrome: z.boolean().optional(),
+  attachments: z.array(taskAttachmentSchema).optional(),
 });
 
 export const permissionResponseSchema = z.object({

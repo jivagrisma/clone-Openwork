@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import type { ProviderId } from '../common/types/providerSettings.js';
 import type { Skill } from '../common/types/skills.js';
+import type { TaskAttachment } from '../common/types/task.js';
 
 export const ACCOMPLISH_AGENT_NAME = 'accomplish';
 
@@ -578,12 +579,55 @@ export interface BuildCliArgsOptions {
     provider: string;
     model: string;
   } | null;
+  /** File attachments to include as context */
+  attachments?: TaskAttachment[];
+}
+
+/**
+ * Generate a context string for file attachments to include in the prompt
+ */
+function generateAttachmentsContext(attachments: TaskAttachment[]): string {
+  if (!attachments || attachments.length === 0) {
+    return '';
+  }
+
+  let context = '\n\n--- Archivos Adjuntos ---\n';
+  context += `Tienes ${attachments.length} archivo(s) adjunto(s) disponibles para referencia:\n\n`;
+
+  for (let i = 0; i < attachments.length; i++) {
+    const att = attachments[i];
+    context += `[Archivo ${i + 1}]: ${att.fileName || att.label || 'sin_nombre'}\n`;
+    context += `  Tipo: ${att.type}\n`;
+    if (att.mimeType) context += `  MIME: ${att.mimeType}\n`;
+    if (att.size) context += `  Tamaño: ${att.size} bytes\n`;
+
+    // For text/code files, include the content
+    if (att.textContent && att.textContent.length < 10000) {
+      context += `  Contenido:\n${att.textContent}\n`;
+    } else if (att.textContent) {
+      context += `  Contenido: (archivo de texto, ${att.textContent.length} caracteres)\n`;
+    }
+
+    // For images, indicate availability
+    if (att.type === 'image' || att.type === 'screenshot') {
+      context += `  (Imagen disponible en formato base64)\n`;
+    }
+
+    context += '\n';
+  }
+
+  context += '--- Fin de Archivos Adjuntos ---\n';
+  return context;
 }
 
 export function buildCliArgs(options: BuildCliArgsOptions): string[] {
-  const { prompt, sessionId, selectedModel } = options;
+  const { prompt, sessionId, selectedModel, attachments } = options;
 
   const args: string[] = ['run'];
+
+  // Generate attachments context if attachments are provided
+  const attachmentsContext = generateAttachmentsContext(attachments || []);
+  const enhancedPrompt = attachmentsContext ? `${prompt}${attachmentsContext}` : prompt;
 
   // CRITICAL: JSON format required for StreamParser to parse messages
   args.push('--format', 'json');
@@ -617,7 +661,7 @@ export function buildCliArgs(options: BuildCliArgsOptions): string[] {
 
   args.push('--agent', ACCOMPLISH_AGENT_NAME);
 
-  args.push(prompt);
+  args.push(enhancedPrompt);
 
   return args;
 }

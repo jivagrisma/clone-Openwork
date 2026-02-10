@@ -18,6 +18,8 @@ export interface TaskConfig {
   sessionId?: string;
   /** Model ID for display name in progress events */
   modelId?: string;
+  /** File attachments to include with the task */
+  attachments?: TaskAttachment[];
 }
 
 export interface Task {
