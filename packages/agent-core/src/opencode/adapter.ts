@@ -165,6 +165,7 @@ export class OpenCodeAdapter extends EventEmitter<OpenCodeAdapterEvents> {
     this.wasInterrupted = false;
     this.completionEnforcer.reset();
     this.lastWorkingDirectory = config.workingDirectory;
+    this.currentSessionTempDir = null;
     this.hasReceivedFirstTool = false;
     this.startTaskCalled = false;
     if (this.waitingTransitionTimer) {
@@ -222,7 +223,8 @@ export class OpenCodeAdapter extends EventEmitter<OpenCodeAdapterEvents> {
     const allArgs = [...baseArgs, ...cliArgs];
     const cmdMsg = `Command: ${command}`;
     const argsMsg = `Args: ${allArgs.join(' ')}`;
-    const safeCwd = config.workingDirectory || this.options.tempPath;
+    // Use session temp directory if attachments were created, otherwise use configured working directory
+    const safeCwd = this.currentSessionTempDir || config.workingDirectory || this.options.tempPath;
     const cwdMsg = `Working directory: ${safeCwd}`;
 
     if (this.options.isPackaged && this.options.platform === 'win32') {
@@ -728,7 +730,8 @@ export class OpenCodeAdapter extends EventEmitter<OpenCodeAdapterEvents> {
     const env = await this.options.buildEnvironment(this.currentTaskId || 'default');
 
     const allArgs = [...baseArgs, ...cliArgs];
-    const safeCwd = config.workingDirectory || this.options.tempPath;
+    // Use session temp directory if attachments were created, otherwise use configured working directory
+    const safeCwd = this.currentSessionTempDir || config.workingDirectory || this.options.tempPath;
 
     const fullCommand = this.buildShellCommand(command, allArgs);
 

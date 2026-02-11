@@ -674,7 +674,8 @@ export function buildCliArgs(options: BuildCliArgsOptions): string[] {
   if (attachments && attachments.length > 0) {
     console.log('[buildCliArgs] Attachments:', attachments.length, 'Temp files:', tempFiles?.length || 0);
     console.log('[buildCliArgs] Attachments context length:', attachmentsContext.length);
-    console.log('[buildCliArgs] Enhanced prompt preview (first 500 chars):', enhancedPrompt.substring(0, 500));
+    console.log('[buildCliArgs] Temp file paths:', tempFiles?.map(f => f.tempFilePath) || []);
+    console.log('[buildCliArgs] Enhanced prompt preview (first 800 chars):', enhancedPrompt.substring(0, 800));
   }
 
   // CRITICAL: JSON format required for StreamParser to parse messages
