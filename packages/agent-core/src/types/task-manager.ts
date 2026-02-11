@@ -63,7 +63,13 @@ export interface TaskAdapterOptions {
   /** Function to build environment variables for a task */
   buildEnvironment: (taskId: string) => Promise<NodeJS.ProcessEnv>;
   /** Function to build CLI arguments for a task */
-  buildCliArgs: (config: TaskConfig, taskId: string) => Promise<string[]>;
+  buildCliArgs: (taskId: string, options: {
+    prompt: string;
+    sessionId?: string;
+    selectedModel?: { provider: string; model: string } | null;
+    attachments?: import('../common/types/task.js').TaskAttachment[];
+    tempFiles?: import('../common/utils/temp-files-manager.js').TempFileInfo[];
+  }) => Promise<string[]>;
   /** Called before the CLI starts */
   onBeforeStart?: () => Promise<void>;
   /** Function to get display name for a model ID */

@@ -30,7 +30,13 @@ export interface TaskCallbacks {
 
 export interface TaskManagerOptions {
   adapterOptions: Omit<AdapterOptions, 'buildCliArgs'> & {
-    buildCliArgs: (config: TaskConfig, taskId: string, tempFiles?: TempFileInfo[]) => Promise<string[]>;
+    buildCliArgs: (taskId: string, options: {
+      prompt: string;
+      sessionId?: string;
+      selectedModel?: { provider: string; model: string } | null;
+      attachments?: import('../../common/types/task.js').TaskAttachment[];
+      tempFiles?: TempFileInfo[];
+    }) => Promise<string[]>;
   };
   defaultWorkingDirectory: string;
   maxConcurrentTasks?: number;
@@ -130,7 +136,13 @@ export class TaskManager {
   ): Promise<Task> {
     const adapterOptions: AdapterOptions = {
       ...this.options.adapterOptions,
-      buildCliArgs: (taskConfig: TaskConfig, tempFiles?: TempFileInfo[]) => this.options.adapterOptions.buildCliArgs(taskConfig, taskId, tempFiles),
+      buildCliArgs: (options: {
+        prompt: string;
+        sessionId?: string;
+        selectedModel?: { provider: string; model: string } | null;
+        attachments?: import('../../common/types/task.js').TaskAttachment[];
+        tempFiles?: TempFileInfo[];
+      }) => this.options.adapterOptions.buildCliArgs(taskId, options),
     };
 
     const adapter = new OpenCodeAdapter(adapterOptions, taskId);

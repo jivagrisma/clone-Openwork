@@ -150,20 +150,26 @@ export async function buildEnvironment(taskId: string): Promise<NodeJS.ProcessEn
   return env;
 }
 
-export async function buildCliArgs(config: TaskConfig, _taskId: string, tempFiles?: TempFileInfo[]): Promise<string[]> {
+export async function buildCliArgs(taskId: string, options: {
+  prompt: string;
+  sessionId?: string;
+  selectedModel?: { provider: string; model: string } | null;
+  attachments?: import('@accomplish_ai/agent-core/common/types/task').TaskAttachment[];
+  tempFiles?: TempFileInfo[];
+}): Promise<string[]> {
   const storage = getStorage();
   const activeModel = storage.getActiveProviderModel();
   const selectedModel = activeModel || storage.getSelectedModel();
 
   return coreBuildCliArgs({
-    prompt: config.prompt,
-    sessionId: config.sessionId,
+    prompt: options.prompt,
+    sessionId: options.sessionId,
     selectedModel: selectedModel ? {
       provider: selectedModel.provider,
       model: selectedModel.model,
     } : null,
-    attachments: config.attachments,
-    tempFiles,
+    attachments: options.attachments,
+    tempFiles: options.tempFiles,
   });
 }
 

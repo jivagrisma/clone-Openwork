@@ -27,7 +27,13 @@ export interface AdapterOptions {
   tempPath: string;
   getCliCommand: () => { command: string; args: string[] };
   buildEnvironment: (taskId: string) => Promise<NodeJS.ProcessEnv>;
-  buildCliArgs: (config: TaskConfig, tempFiles?: TempFileInfo[]) => Promise<string[]>;
+  buildCliArgs: (options: {
+    prompt: string;
+    sessionId?: string;
+    selectedModel?: { provider: string; model: string } | null;
+    attachments?: import('../common/types/task.js').TaskAttachment[];
+    tempFiles?: TempFileInfo[];
+  }) => Promise<string[]>;
   onBeforeStart?: () => Promise<void>;
   getModelDisplayName?: (modelId: string) => string;
 }
@@ -198,7 +204,13 @@ export class OpenCodeAdapter extends EventEmitter<OpenCodeAdapterEvents> {
       await this.options.onBeforeStart();
     }
 
-    const cliArgs = await this.options.buildCliArgs(config, this.tempFileInfos);
+    const cliArgs = await this.options.buildCliArgs({
+      prompt: config.prompt,
+      sessionId: config.sessionId,
+      selectedModel: this.currentModelId ? { provider: 'anthropic', model: this.currentModelId } : null,
+      attachments: config.attachments,
+      tempFiles: this.tempFileInfos,
+    });
 
     const { command, args: baseArgs } = this.options.getCliCommand();
     const startMsg = `Starting: ${command} ${[...baseArgs, ...cliArgs].join(' ')}`;
@@ -702,7 +714,13 @@ export class OpenCodeAdapter extends EventEmitter<OpenCodeAdapterEvents> {
       workingDirectory: this.lastWorkingDirectory,
     };
 
-    const cliArgs = await this.options.buildCliArgs(config);
+    const cliArgs = await this.options.buildCliArgs({
+      prompt: config.prompt,
+      sessionId: config.sessionId,
+      selectedModel: this.currentModelId ? { provider: 'anthropic', model: this.currentModelId } : null,
+      attachments: config.attachments,
+      tempFiles: this.tempFileInfos,
+    });
 
     const { command, args: baseArgs } = this.options.getCliCommand();
     console.log('[OpenCode Adapter] Session resumption command:', command, [...baseArgs, ...cliArgs].join(' '));
